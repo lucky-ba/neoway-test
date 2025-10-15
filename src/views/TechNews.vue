@@ -22,7 +22,7 @@
 import "neoway-components";
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
-import SectionItem from './SectionItem.vue'
+import SectionItem from '../components/SectionItem.vue'
 
 interface SearchEvent {
   query: string;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TechNews from './components/TechNews.vue'
+import TechNews from './views/TechNews.vue'
 </script>
 
 <template>
