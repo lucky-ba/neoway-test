@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import TechNews from './components/TechNews.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <TechNews />
 </template>
