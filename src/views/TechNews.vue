@@ -21,21 +21,14 @@
 <script setup lang="ts">
 import "neoway-components";
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
 import SectionItem from '../components/SectionItem.vue'
+import { getTechNews, type Article } from "../services/newsApi";
 
 interface SearchEvent {
   query: string;
 }
-interface Article {
-  title: string;
-  description: string;
-  author: string
-  url: string
-  publishDate: string;
-}
 
-const data = ref([]);
+const news = ref<Article[]>([]);
 const tableColumns = ref([
   {
     key: "title",
@@ -52,23 +45,16 @@ const tableColumns = ref([
 ]);
 const error = ref<string | null>(null);
 
-const fetchData = async (): Promise<void> => {
+const fetchTechNews = async () => {
   error.value = null;
-
   try {
-    const response = await axios.get(
-      "https://newsapi.org/v2/everything?q=tech&apiKey=33eb5a6baf50414e8d5f17a3ad4b7ab9"
-    );
-    
-    data.value = response.data.articles.slice(0, 100);
+    news.value = await getTechNews();
   } catch (err) {
-    error.value = err instanceof Error ? err.message : "An error occurred";
+    error.value = (err as Error).message;
   }
 };
 
-onMounted(() => {
-  fetchData();
-});
+onMounted(fetchTechNews);
 
 const searchValue = ref("");
 const isModalOpen = ref(false);
@@ -81,8 +67,6 @@ const modalContentData = ref<Article>({
 });
 
 function handleRowClick(event: CustomEvent<Article>) {
-  console.log(event);
-  
   modalContentData.value = event.detail;
   isModalOpen.value = true
 }
@@ -97,7 +81,7 @@ function handleSearch(event: CustomEvent<SearchEvent>) {
 
 const filteredData = computed(() => {
   return (
-    data?.value?.filter((article: Article) => {
+    news?.value?.filter((article: Article) => {
       const lowerCaseSearchValue = searchValue.value.toLowerCase();
       const matchesTitle =
         !lowerCaseSearchValue ||
