@@ -19,11 +19,9 @@ tech-news-reader/
 │   └── index.html
 ├── src/
 │   ├── components/
-│   │   ├── NewsTable.vue
-│   │   ├── SearchBar.vue
-│   │   └── NewsModal.vue
+│   │   ├── SectionItem.vue
 │   ├── views/
-│   │   └── Home.vue
+│   │   └── TechNews.vue
 │   ├── services/
 │   │   └── newsApi.js
 │   ├── App.vue
@@ -41,7 +39,7 @@ Before running this project, make sure you have the following installed:
 ## Installation & Setup
 ### 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/lucky-ba/neoway-test.git
 cd tech-news-reader
 ```
 ### 2. Install dependencies
