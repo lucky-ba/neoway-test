@@ -4,6 +4,7 @@
     placeholder="Search news..."
     debounce="300"
     @search="handleSearch"
+    :suggestions="inputSuggestions"
   ></search-input>
   <virtualized-table
     :columns="tableColumns"
@@ -22,13 +23,15 @@
 import "neoway-components";
 import { ref, onMounted, computed } from "vue";
 import SectionItem from '../components/SectionItem.vue'
-import { getTechNews, type Article } from "../services/newsApi";
+import { getTechNews, type Article } from "../services/apis/newsApi";
+import { getSuggestionsFromLocalStorage, saveSuggestionToLocalStorage, type Suggestion } from "../services/localstotage";
 
 interface SearchEvent {
   query: string;
 }
 
 const news = ref<Article[]>([]);
+const inputSuggestions = ref<Suggestion[]>([]);
 const tableColumns = ref([
   {
     key: "title",
@@ -54,7 +57,22 @@ const fetchTechNews = async () => {
   }
 };
 
-onMounted(fetchTechNews);
+const fetchSuggestions = async () => {
+  error.value = null;
+  try {
+    const data = getSuggestionsFromLocalStorage();
+    console.log(data);
+    
+    if (data !== null) inputSuggestions.value = data
+  } catch (err) {
+    error.value = (err as Error).message;
+  }
+};
+
+onMounted(() => {
+  fetchSuggestions()
+  fetchTechNews()
+});
 
 const searchValue = ref("");
 const isModalOpen = ref(false);
@@ -68,6 +86,14 @@ const modalContentData = ref<Article>({
 
 function handleRowClick(event: CustomEvent<Article>) {
   modalContentData.value = event.detail;
+  error.value = null;
+  try {
+    const data: Suggestion = { id: event.detail.title, label: event.detail.title, value: event.detail.title }
+    saveSuggestionToLocalStorage(data);
+    fetchSuggestions()
+  } catch (err) {
+    error.value = (err as Error).message;
+  }
   isModalOpen.value = true
 }
 
